@@ -72,6 +72,25 @@ const server = http.createServer(async (req, res) =>
       }
     });
   }
+  else if (req.method === 'DELETE') 
+  {
+    try 
+    {
+      await fs.promises.unlink(filePath);
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end("OK: Картинку видалено з кешу");
+    } 
+    catch (error) 
+    {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end("Not Found: Файл для видалення не знайдено");
+    }
+  }
+  else 
+  {
+    res.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end("Method Not Allowed");
+  }
 });
 
 server.listen(options.port, options.host, () => 
