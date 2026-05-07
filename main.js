@@ -2,6 +2,7 @@ const { program } = require('commander');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const superagent = require('superagent');
 
 program
   .requiredOption("-h, --host <address>")
@@ -43,8 +44,21 @@ const server = http.createServer(async (req, res) =>
     } 
     catch (error) 
     {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end("Not Found: Картинку не знайдено в кеші");
+      try 
+      {
+        const catRes = await superagent.get(`https://http.cat/${code}`);
+        const imageBuffer = catRes.body;
+        
+        await fs.promises.writeFile(filePath, imageBuffer);
+        
+        res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        res.end(imageBuffer);
+      } 
+      catch (catError) 
+      {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end("Not Found");
+      }
     }
   }
   else if (req.method === 'PUT') 
