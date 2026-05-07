@@ -1,3 +1,4 @@
 curl -v http://127.0.0.1:3000/200
 curl.exe -v -X PUT --data-binary "@201cat.jpg" http://127.0.0.1:3000/201
+curl.exe -v -X DELETE http://127.0.0.1:3000/200
 curl.exe -v -X POST http://127.0.0.1:3000/200
