@@ -33,16 +33,19 @@ const server = http.createServer(async (req, res) =>
     return;
   }
 
-  try 
+  if (req.method === 'GET') 
   {
-    const data = await fs.promises.readFile(filePath);
-    res.writeHead(200, { 'Content-Type': 'image/jpeg' });
-    res.end(data);
-  } 
-  catch (error) 
-  {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end("Not Found: Картинку для цього коду не знайдено в локальному кеші");
+    try 
+    {
+      const data = await fs.promises.readFile(filePath);
+      res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+      res.end(data);
+    } 
+    catch (error) 
+    {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end("Not Found: Картинку не знайдено в кеші");
+    }
   }
 });
 
