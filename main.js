@@ -47,6 +47,31 @@ const server = http.createServer(async (req, res) =>
       res.end("Not Found: Картинку не знайдено в кеші");
     }
   }
+  else if (req.method === 'PUT') 
+  {
+    const chunks = [];
+    
+    req.on('data', (chunk) => 
+    {
+      chunks.push(chunk);
+    });
+
+    req.on('end', async () => 
+    {
+      try 
+      {
+        const buffer = Buffer.concat(chunks);
+        await fs.promises.writeFile(filePath, buffer);
+        res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end("Created: Картинку збережено у кеш");
+      } 
+      catch (error) 
+      {
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end("Internal Server Error: Не вдалося зберегти файл");
+      }
+    });
+  }
 });
 
 server.listen(options.port, options.host, () => 
